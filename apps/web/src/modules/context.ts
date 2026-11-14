@@ -1,15 +1,47 @@
 import type {
   EphemerisService,
   I18nApi,
+  Language,
   LunarSite,
   ReportData,
   SceneApi,
+  SceneMode,
   SiteMetrics,
   SolarPanelViewApi,
   TerrainService,
   TimeController,
+  Unsubscribe,
+  UtcString,
   Vec3,
 } from '@lunar/contracts';
+
+/** Escena con las funciones extra de `@lunar/scene3d` (SceneHandle) que usa el Shell. */
+export interface WebScene extends SceneApi {
+  focusSite?(siteId: string): void;
+  landAt?(siteId: string): void;
+  setSelectedSite?(siteId: string | null): void;
+  getMode?(): SceneMode;
+  onModeChange?(cb: (mode: SceneMode) => void): Unsubscribe;
+  zoom?(delta: number): void;
+  orbitBy?(dAzimuth: number, dPolar: number): void;
+}
+
+/** Control de tiempo de `@lunar/sites` (LunarTimeController) con saltos por dia lunar y eventos. */
+export interface WebTime extends TimeController {
+  stepLunarDays?(n: number): { ok: true; value: UtcString } | { ok: false; error: string };
+  jumpToNext?(
+    site: LunarSite,
+    kind: 'sunrise' | 'sunset' | 'earthrise',
+  ): Promise<{ ok: true; value: UtcString } | { ok: false; error: string }>;
+}
+
+/** i18n con las funciones extra de `@lunar/i18n`. */
+export type WebI18n = I18nApi & {
+  addResources(ns: string, dict: Record<string, Record<string, string>>): void;
+  getLanguage?(): Language;
+  tv?(key: string, vars?: Record<string, string | number>): string;
+  dir?(): 'ltr' | 'rtl';
+};
 
 export interface WebServices {
   sites?: { list(): LunarSite[]; add(site: LunarSite): void };
@@ -18,9 +50,11 @@ export interface WebServices {
   terrain?: TerrainService;
   /** Sol unitario en el marco Moon-fixed ME (+X Tierra, +Y este, +Z norte). */
   sunDirection?: (utc: string) => Vec3;
-  scene?: SceneApi;
-  i18n?: I18nApi & { addResources(ns: string, dict: Record<string, Record<string, string>>): void };
-  time?: TimeController;
+  /** Tierra unitaria en el marco Moon-fixed ME. */
+  earthDirection?: (utc: string) => Vec3;
+  scene?: WebScene;
+  i18n?: WebI18n;
+  time?: WebTime;
   solarView?: () => SolarPanelViewApi;
   exportReport?: (data: ReportData) => Promise<Uint8Array>;
   metrics?: (site: LunarSite, startUtc: string, endUtc: string, stepMin: number) => Promise<SiteMetrics>;

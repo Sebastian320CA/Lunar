@@ -6,6 +6,9 @@ export interface SkyDiagramInput {
   sky: SkyState;
   /** Lado del cuadrado en pixeles. */
   size: number;
+  /** Etiquetas traducidas (por defecto 'Sun' y 'Earth'). */
+  sunLabel?: string;
+  earthLabel?: string;
 }
 
 function esc(s: string): string {
@@ -54,15 +57,15 @@ export function renderSkyDiagram(input: SkyDiagramInput): string {
 
   const cardinals: Array<[string, number]> = [['N', 0], ['E', 90], ['S', 180], ['W', 270]];
   const cardText = cardinals
-    .map(([l, az]) => `<text data-cardinal="${l}" x="${num(px(az))}" y="${num(h - pad / 4)}" text-anchor="middle" font-size="${num(pad * 0.7)}">${text(l)}</text>`)
+    .map(([l, az]) => `<text data-cardinal="${l}" x="${num(px(az))}" y="${num(h - pad / 4)}" text-anchor="middle" font-size="${num(pad * 0.7)}" fill="#c9d1e0">${text(l)}</text>`)
     .join('');
 
   const r = size * 0.025;
   const sun = `<circle data-body="sun" cx="${num(px(sky.sun.azimuthDeg))}" cy="${num(py(sky.sun.elevationDeg))}" r="${num(r)}" fill="#f5b700" stroke="#000" opacity="${sky.sun.aboveTerrainHorizon ? 1 : 0.4}"/>`;
   const earth = `<circle data-body="earth" cx="${num(px(sky.earth.azimuthDeg))}" cy="${num(py(sky.earth.elevationDeg))}" r="${num(r)}" fill="#2a6fdb" stroke="#000" opacity="${sky.earth.aboveTerrainHorizon ? 1 : 0.4}"/>`;
   const labels =
-    `<text x="${num(px(sky.sun.azimuthDeg) + r * 1.5)}" y="${num(py(sky.sun.elevationDeg))}" font-size="${num(pad * 0.7)}">${text('Sun')}</text>` +
-    `<text x="${num(px(sky.earth.azimuthDeg) + r * 1.5)}" y="${num(py(sky.earth.elevationDeg))}" font-size="${num(pad * 0.7)}">${text('Earth')}</text>`;
+    `<text x="${num(px(sky.sun.azimuthDeg) + r * 1.5)}" y="${num(py(sky.sun.elevationDeg))}" font-size="${num(pad * 0.7)}" fill="#ffd466">${text(input.sunLabel ?? 'Sun')}</text>` +
+    `<text x="${num(px(sky.earth.azimuthDeg) + r * 1.5)}" y="${num(py(sky.earth.elevationDeg))}" font-size="${num(pad * 0.7)}" fill="#8fb8ff">${text(input.earthLabel ?? 'Earth')}</text>`;
 
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${num(w)}" height="${num(h)}" viewBox="0 0 ${num(w)} ${num(h)}" role="img" aria-label="${text('Sky diagram')}">` +

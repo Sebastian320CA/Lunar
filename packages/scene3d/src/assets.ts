@@ -138,6 +138,12 @@ export class AssetLoader {
         .setDRACOLoader(this.draco)
         .setKTX2Loader(this.ktx2)
         .setMeshoptDecoder(MeshoptDecoder);
+      // Las texturas embebidas en el GLB se exponen como URL blob:. ImageBitmapLoader las pide con
+      // fetch(), que la CSP (connect-src 'self') bloquea; TextureLoader usa <img> (img-src permite blob:).
+      this.gltf.register((parser) => {
+        parser.textureLoader = new TextureLoader(parser.options.manager);
+        return { name: 'lunar_img_textures' };
+      });
     }
     return this.gltf;
   }

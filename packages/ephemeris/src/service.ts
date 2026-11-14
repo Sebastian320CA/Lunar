@@ -9,6 +9,7 @@ import type {
 } from '@lunar/contracts';
 import { ANALYTIC_NOTE, AnalyticSource } from './analytic.js';
 import { BinarySource } from './binary.js';
+import { HybridSource } from './hybrid.js';
 import { EARTH_RADIUS_KM, SUN_RADIUS_KM, angularRadiusDeg, toAzEl } from './geometry.js';
 import type { VectorSource } from './source.js';
 
@@ -251,6 +252,15 @@ export const SPICE_NOTE =
 
 /** Indica si `source` es la fuente binaria (SPICE) o la analitica aproximada. */
 export function getEphemerisMeta(source: VectorSource): EphemerisMeta {
+  if (source instanceof HybridSource && source.primary instanceof BinarySource) {
+    const { startMs, endMs } = source.primary.coverage();
+    const d = (ms: number): string => new Date(ms).toISOString().slice(0, 10);
+    return {
+      source: 'spice',
+      approximate: false,
+      note: `${SPICE_NOTE} Fuera de ${d(startMs)} a ${d(endMs)} se usa el respaldo Meeus (aproximado).`,
+    };
+  }
   if (source instanceof BinarySource) return { source: 'spice', approximate: false, note: SPICE_NOTE };
   const note = source instanceof AnalyticSource ? source.note : ANALYTIC_NOTE;
   return { source: 'analytic', approximate: true, note };

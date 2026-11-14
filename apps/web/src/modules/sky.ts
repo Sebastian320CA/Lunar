@@ -26,6 +26,7 @@ export const skyModule: WebModule = {
         time: () => ctx.services.time,
         ephemerisMeta: () => ctx.services.ephemerisMeta,
         t: (key) => ctx.services.i18n?.t(key) ?? key,
+        lang: () => ctx.services.i18n?.getLanguage?.() ?? 'es',
       }),
     );
   },

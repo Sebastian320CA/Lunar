@@ -20,7 +20,8 @@ export const PROGRAM_COLORS: Readonly<Record<Program, number>> = {
   custom: 0xd58aff,
 };
 
-const MARKER_RADIUS = 0.02;
+const MARKER_RADIUS = 0.022;
+const HIGHLIGHT_SCALE = 2.2;
 
 export interface MarkerLayerOptions {
   /** Tamano del lienzo en pixeles. */
@@ -68,6 +69,11 @@ export class MarkerLayer {
       this.meshes.set(s.id, mesh);
       this.order.push(s.id);
     }
+  }
+
+  /** Agranda el marcador elegido; null restablece todos. */
+  setHighlighted(id: string | null): void {
+    for (const [key, m] of this.meshes) m.scale.setScalar(key === id ? HIGHLIGHT_SCALE : 1);
   }
 
   getSiteIds(): readonly string[] {

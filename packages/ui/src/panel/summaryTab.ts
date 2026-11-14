@@ -10,11 +10,13 @@ export function createSummaryTab(i18n: I18nApi): PanelTab {
     titleKey: 'panel.summary',
     mount(container: HTMLElement, ctx: PanelContext): () => void {
       const { site } = ctx;
+      const programKey = `shell.program.${site.program}`;
+      const programText = i18n.t(programKey);
       const dl = document.createElement('dl');
       dl.className = 'ln-summary';
       const rows: Array<[string, string]> = [
         ['panel.name', site.name],
-        ['panel.program', site.program],
+        ['panel.program', programText && programText !== programKey ? programText : site.program],
         ['panel.coordinates', `${site.latDeg.toFixed(4)}, ${site.lonDeg.toFixed(4)}`],
         ['panel.source', site.source],
         ['panel.verified', i18n.t(site.verified ? 'panel.verified' : 'panel.unverified')],

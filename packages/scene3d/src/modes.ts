@@ -1,4 +1,4 @@
-import { PerspectiveCamera, Vector3 } from 'three';
+import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import { EARTH_DISTANCE, MOON_RADIUS } from './core.js';
 import { latLonToVec3 } from './math.js';
 
@@ -6,13 +6,16 @@ export type SceneMode = 'intro' | 'landing' | 'free' | 'map' | 'site';
 
 export const SCENE_MODES: readonly SceneMode[] = ['intro', 'landing', 'free', 'map', 'site'];
 
-/** Transiciones validas (site -> site cubre elegir otro sitio). */
+/**
+ * Transiciones validas (site -> site cubre elegir otro sitio y landing -> landing cambiar de sitio).
+ * Desde `intro` no se salta directo a `site`: primero hay que llegar a la Luna.
+ */
 export const MODE_TRANSITIONS: Readonly<Record<SceneMode, readonly SceneMode[]>> = {
-  intro: ['landing', 'free'],
-  landing: ['free', 'map'],
-  free: ['landing', 'map', 'intro'],
+  intro: ['landing', 'free', 'map'],
+  landing: ['landing', 'free', 'map', 'site'],
+  free: ['landing', 'map', 'intro', 'site'],
   map: ['free', 'site', 'landing'],
-  site: ['site', 'map', 'free'],
+  site: ['site', 'map', 'free', 'landing'],
 };
 
 /** Duracion (ms) de la transicion que ENTRA a cada modo. */
@@ -129,10 +132,15 @@ export class ModeMachine {
 
   /** Atenuacion del fondo 0..1: 1 en `site`, interpolada al entrar o salir. */
   backgroundDim(): number {
+    return this.modeWeight('site');
+  }
+
+  /** Peso 0..1 de `mode`: 1 si es el modo estable, interpolado durante la transicion que entra o sale. */
+  modeWeight(mode: SceneMode): number {
     const a = this.update();
-    if (a === null) return this.current === 'site' ? 1 : 0;
-    const f = a.from === 'site' ? 1 : 0;
-    const t = a.to === 'site' ? 1 : 0;
+    if (a === null) return this.current === mode ? 1 : 0;
+    const f = a.from === mode ? 1 : 0;
+    const t = a.to === mode ? 1 : 0;
     return f + (t - f) * a.progress;
   }
 
@@ -146,10 +154,27 @@ export class ModeMachine {
 export interface CameraPose {
   position: Vector3;
   target: Vector3;
+  /** Vector "arriba" de la camara; por defecto +Y. En `landing` es la normal local del suelo. */
+  up?: Vector3;
+  /** Campo de vision vertical en grados; por defecto el de la camara (50). */
+  fov?: number;
 }
 
+export const DEFAULT_FOV_DEG = 50;
+export const LANDING_FOV_DEG = 100;
+const WORLD_UP = new Vector3(0, 1, 0);
+
 export function lerpPose(a: CameraPose, b: CameraPose, t: number): CameraPose {
-  return { position: a.position.clone().lerp(b.position, t), target: a.target.clone().lerp(b.target, t) };
+  const up = (a.up ?? WORLD_UP).clone().lerp(b.up ?? WORLD_UP, t);
+  if (up.lengthSq() < 1e-8) up.copy(b.up ?? WORLD_UP);
+  const fa = a.fov ?? DEFAULT_FOV_DEG;
+  const fb = b.fov ?? DEFAULT_FOV_DEG;
+  return {
+    position: a.position.clone().lerp(b.position, t),
+    target: a.target.clone().lerp(b.target, t),
+    up: up.normalize(),
+    fov: fa + (fb - fa) * t,
+  };
 }
 
 export interface OrbitLimits {
@@ -217,21 +242,36 @@ export class OrbitState {
   }
 }
 
-const EARTH_POS = new Vector3(0, 0, -EARTH_DISTANCE);
+/** Marco para el modo `landing`: orientacion actual de la Luna y posicion fisica de la Tierra (mundo). */
+export interface LandingFrame {
+  quaternion: Quaternion;
+  earthWorld: Vector3;
+}
 
-/** Primera persona sobre la superficie, mirando hacia el horizonte en direccion de la Tierra. */
-export function landingPose(latDeg: number, lonDeg: number, eyeHeight = 0.015): CameraPose {
-  const normal = latLonToVec3(latDeg, lonDeg, 1);
+const DEG = Math.PI / 180;
+
+/**
+ * Primera persona sobre la superficie. La camara usa la normal local como "arriba" y mira hacia el
+ * acimut de la Tierra, levantando la vista para que entren el horizonte y (si esta alta) la Tierra.
+ * Sin `frame` se asume la Luna sin rotar y la Tierra media en +Z local (longitud 0).
+ */
+export function landingPose(latDeg: number, lonDeg: number, eyeHeight = 0.002, frame?: LandingFrame): CameraPose {
+  const q = frame?.quaternion ?? new Quaternion();
+  const earth = frame?.earthWorld ?? new Vector3(0, 0, EARTH_DISTANCE).applyQuaternion(q);
+  const normal = latLonToVec3(latDeg, lonDeg, 1).applyQuaternion(q).normalize();
   const position = normal.clone().multiplyScalar(MOON_RADIUS + eyeHeight);
-  const toEarth = EARTH_POS.clone().sub(position).normalize();
-  const tangent = toEarth.sub(normal.clone().multiplyScalar(toEarth.dot(normal)));
+  const toEarth = earth.clone().sub(position).normalize();
+  const sinEl = toEarth.dot(normal);
+  const tangent = toEarth.clone().sub(normal.clone().multiplyScalar(sinEl));
   if (tangent.lengthSq() < 1e-8) {
-    tangent.set(1, 0, 0).sub(normal.clone().multiplyScalar(normal.x));
-    if (tangent.lengthSq() < 1e-8) tangent.set(0, 0, 1);
+    tangent.crossVectors(normal, Math.abs(normal.y) < 0.9 ? new Vector3(0, 1, 0) : new Vector3(1, 0, 0));
   }
   tangent.normalize();
-  const target = position.clone().add(tangent.multiplyScalar(0.5)).add(normal.clone().multiplyScalar(0.12));
-  return { position, target };
+  const elev = Math.asin(Math.max(-1, Math.min(1, sinEl)));
+  // Con FOV 100 la vista cubre de look-50 a look+50 grados: entra el suelo y la Tierra hasta ~70 grados.
+  const look = elev > 0 ? Math.min(20 * DEG, Math.max(0, elev - 46 * DEG)) : 0;
+  const dir = tangent.multiplyScalar(Math.cos(look)).add(normal.clone().multiplyScalar(Math.sin(look)));
+  return { position, target: position.clone().add(dir), up: normal, fov: LANDING_FOV_DEG };
 }
 
 /** Vista del sitio de frente, a `distance` del centro de la Luna. */
@@ -244,7 +284,22 @@ export interface CameraRigOptions {
   introStart?: CameraPose;
   introEnd?: CameraPose;
   limits?: OrbitLimits;
+  /** Orientacion de la Luna y posicion fisica de la Tierra para `landing`. */
+  landingFrame?: () => LandingFrame;
+  /** Reloj en ms (para el vuelo inicial de `intro`). */
+  clock?: Clock;
 }
+
+/** Pose inicial del vuelo de `intro`: mas alla de la Tierra, mirando hacia la Luna. */
+export const DEFAULT_INTRO_START: CameraPose = {
+  position: new Vector3(9, 5, -84),
+  target: new Vector3(0, 0, -20),
+};
+/** Pose final de `intro`: la Luna en primer plano y la Tierra visible a un lado. */
+export const DEFAULT_INTRO_END: CameraPose = {
+  position: new Vector3(3.2, 1.0, 4.2),
+  target: new Vector3(-0.9, -0.15, -2.5),
+};
 
 /** Aplica poses a la camara segun la maquina de estados. */
 export class CameraRig {
@@ -257,6 +312,9 @@ export class CameraRig {
   private lastMode: SceneMode;
   private lastTarget: SceneMode | null = null;
   private readonly look = new Vector3();
+  private readonly landingFrame: (() => LandingFrame) | undefined;
+  private readonly clock: Clock;
+  private readonly introT0: number;
 
   readonly machine: ModeMachine;
   readonly camera: PerspectiveCamera;
@@ -266,15 +324,30 @@ export class CameraRig {
     this.camera = camera;
     this.orbit = new OrbitState(options.limits);
     this.landing = options.landing ?? { latDeg: 0, lonDeg: 0 };
-    this.introStart = options.introStart ?? { position: new Vector3(0, 30, 120), target: new Vector3(0, 0, -EARTH_DISTANCE / 2) };
-    this.introEnd = options.introEnd ?? { position: new Vector3(6, 2, 8), target: new Vector3(0, 0, -EARTH_DISTANCE / 4) };
-    this.orbit.setFromPosition(new Vector3(0, 0, 6));
+    this.introStart = options.introStart ?? DEFAULT_INTRO_START;
+    this.introEnd = options.introEnd ?? DEFAULT_INTRO_END;
+    this.landingFrame = options.landingFrame;
+    this.clock = options.clock ?? (() => performance.now());
+    this.introT0 = this.clock();
+    this.orbit.setFromPosition(this.introEnd.position);
+    if (machine.mode === 'intro') this.apply(this.introStart);
     this.startPose = this.currentPose();
     this.lastMode = machine.mode;
   }
 
   currentPose(): CameraPose {
-    return { position: this.camera.position.clone(), target: this.look.clone() };
+    return {
+      position: this.camera.position.clone(),
+      target: this.look.clone(),
+      up: this.camera.up.clone(),
+      fov: this.camera.fov,
+    };
+  }
+
+  /** Progreso 0..1 del vuelo inicial de `intro`. */
+  introProgress(): number {
+    const d = this.machine.getDuration('intro');
+    return d <= 0 ? 1 : Math.min(1, Math.max(0, (this.clock() - this.introT0) / d));
   }
 
   /** Pose estable de un modo. */
@@ -283,7 +356,7 @@ export class CameraRig {
       case 'intro':
         return this.introStart;
       case 'landing':
-        return landingPose(this.landing.latDeg, this.landing.lonDeg);
+        return landingPose(this.landing.latDeg, this.landing.lonDeg, undefined, this.landingFrame?.());
       case 'site':
         return this.siteTarget !== null ? sitePose(this.siteTarget.latDeg, this.siteTarget.lonDeg) : this.orbitPose();
       case 'map':
@@ -317,16 +390,24 @@ export class CameraRig {
       this.orbit.step(dtSec);
       this.apply(this.orbitPose());
     } else if (mode === 'intro') {
-      this.apply(this.introEnd);
+      this.apply(lerpPose(this.introStart, this.introEnd, smoothstep(this.introProgress())));
     } else {
       this.apply(this.poseFor(mode));
     }
-    if (mode !== 'free' && mode !== 'map') this.orbit.setFromPosition(this.camera.position.lengthSq() > 0 ? this.camera.position : new Vector3(0, 0, 6));
+    if (mode !== 'free' && mode !== 'map') {
+      this.orbit.setFromPosition(this.camera.position.lengthSq() > 4 ? this.camera.position : this.introEnd.position);
+    }
   }
 
   private apply(pose: CameraPose): void {
     this.camera.position.copy(pose.position);
     this.look.copy(pose.target);
+    this.camera.up.copy(pose.up ?? WORLD_UP);
     this.camera.lookAt(pose.target);
+    const fov = pose.fov ?? DEFAULT_FOV_DEG;
+    if (Math.abs(this.camera.fov - fov) > 1e-3) {
+      this.camera.fov = fov;
+      this.camera.updateProjectionMatrix();
+    }
   }
 }
