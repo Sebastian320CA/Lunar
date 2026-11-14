@@ -79,7 +79,14 @@ function addMinutesIso(utc: string, minutes: number): string | undefined {
 }
 
 export function createEnergyTab(deps: EnergyTabDeps): PanelTab {
-  const tr = (k: string): string => deps.t?.(k) ?? k;
+  /** Traduce con respaldo: i18n devuelve la propia clave si falta. */
+  const tr = (k: string, fallback?: string): string => {
+    const v = deps.t?.(k);
+    return v && v !== k ? v : (fallback ?? k);
+  };
+  const fieldLabel = (f: Field): string => tr(`energy.field.${f.key}`, f.label);
+  const unitLabel = (f: Field): string => (f.unit === 'grados' ? tr('energy.unit.deg', 'grados') : f.unit);
+  const methodLabel = (m: EnergyMethod): string => tr(`energy.method.${m.id}`, m.label);
   const list = deps.methods ?? allMethods;
 
   return {
@@ -92,26 +99,26 @@ export function createEnergyTab(deps: EnergyTabDeps): PanelTab {
 
       const root = document.createElement('div');
       const heading = document.createElement('h3');
-      heading.textContent = tr('energy.title');
+      heading.textContent = tr('energy.title', 'Energía solar');
       root.appendChild(heading);
 
-      const methodLabel = document.createElement('label');
-      methodLabel.textContent = 'Metodo ';
+      const methodLabelEl = document.createElement('label');
+      methodLabelEl.textContent = `${tr('energy.method', 'Método')} `;
       const select = document.createElement('select');
       for (const m of list) {
         const o = document.createElement('option');
         o.value = m.id;
-        o.textContent = m.label;
+        o.textContent = methodLabel(m);
         select.appendChild(o);
       }
-      methodLabel.appendChild(select);
-      root.appendChild(methodLabel);
+      methodLabelEl.appendChild(select);
+      root.appendChild(methodLabelEl);
 
       const inputs = new Map<string, { input: HTMLInputElement; field: Field }>();
       for (const f of fields()) {
         const row = document.createElement('div');
         const label = document.createElement('label');
-        label.textContent = `${f.label} (${f.unit}) `;
+        label.textContent = `${fieldLabel(f)} (${unitLabel(f)}) `;
         const input = document.createElement('input');
         input.type = 'text';
         input.inputMode = 'decimal';
@@ -124,7 +131,7 @@ export function createEnergyTab(deps: EnergyTabDeps): PanelTab {
 
       const button = document.createElement('button');
       button.type = 'button';
-      button.textContent = 'Calcular';
+      button.textContent = tr('energy.calculate', 'Calcular');
       root.appendChild(button);
 
       const status = document.createElement('p');
@@ -152,7 +159,7 @@ export function createEnergyTab(deps: EnergyTabDeps): PanelTab {
           view.mount(solarHost);
         } catch (e) {
           view = undefined;
-          status.textContent = e instanceof Error ? e.message : 'Vista 3D no disponible.';
+          status.textContent = e instanceof Error ? e.message : tr('energy.no3d', 'Vista 3D no disponible.');
         }
       }
 
@@ -161,7 +168,7 @@ export function createEnergyTab(deps: EnergyTabDeps): PanelTab {
         for (const [key, { input, field }] of inputs) {
           const v = parseBounded(input.value, field.min, field.max);
           if (v === undefined) {
-            status.textContent = `${field.label}: numero entre ${field.min} y ${field.max}.`;
+            status.textContent = `${fieldLabel(field)}: ${tr('energy.rangeError', 'número entre')} ${field.min} – ${field.max}.`;
             input.setAttribute('aria-invalid', 'true');
             return undefined;
           }
@@ -180,16 +187,16 @@ export function createEnergyTab(deps: EnergyTabDeps): PanelTab {
         const durationH = values['durationH'] ?? 72;
         const end = addMinutesIso(ctx.utc, durationH * 60);
         if (!end) {
-          status.textContent = 'Fecha UTC invalida.';
+          status.textContent = tr('energy.badUtc', 'Fecha UTC inválida.');
           return;
         }
         const id = ++run;
-        status.textContent = 'Calculando...';
+        status.textContent = tr('energy.calculating', 'Calculando...');
         let skies: SkyState[];
         try {
           skies = await deps.getSeries(ctx.site, ctx.utc, end, stepMin);
         } catch (e) {
-          if (!disposed && id === run) status.textContent = e instanceof Error ? e.message : 'Error de efemerides.';
+          if (!disposed && id === run) status.textContent = e instanceof Error ? e.message : tr('energy.ephemerisError', 'Error de efemérides.');
           return;
         }
         if (disposed || id !== run) return;
@@ -204,14 +211,20 @@ export function createEnergyTab(deps: EnergyTabDeps): PanelTab {
         const xLabels = skies.length > 0 ? [skies[0]?.utc ?? '', skies[skies.length - 1]?.utc ?? ''] : [];
         const powers = results.map((r) => r.powerW);
 
-        insertSvg(chartHosts[0] as HTMLElement, powerChartSvg([{ label: method.label, values: powers }], { xLabels }));
+        insertSvg(chartHosts[0] as HTMLElement, powerChartSvg([{ label: methodLabel(method), values: powers }], { xLabels, title: tr('energy.chart.power', 'Potencia') }));
         insertSvg(
           chartHosts[1] as HTMLElement,
-          cumulativeEnergySvg([{ label: method.label, values: cumulativeEnergyWh(results) }], { xLabels }),
+          cumulativeEnergySvg([{ label: methodLabel(method), values: cumulativeEnergyWh(results) }], {
+            xLabels,
+            title: tr('energy.chart.cumulative', 'Energía acumulada'),
+          }),
         );
         insertSvg(
           chartHosts[2] as HTMLElement,
-          methodComparisonSvg(list.map((m) => ({ label: m.id, value: totalEnergyWh(mk(m)) }))),
+          methodComparisonSvg(
+            list.map((m) => ({ label: tr(`energy.short.${m.id}`, m.id), value: totalEnergyWh(mk(m)) })),
+            { title: tr('energy.chart.methods', 'Comparación de métodos') },
+          ),
         );
 
         const sim = createBattery({
@@ -220,9 +233,10 @@ export function createEnergyTab(deps: EnergyTabDeps): PanelTab {
           efficiency: values['batteryEff'] ?? 0,
         }).simulate(powers, stepMin * 60);
         summary.textContent =
-          `Energia total: ${totalEnergyWh(results).toFixed(2)} Wh. ` +
-          `Noche resistida: ${sim.nightEnduredHours.toFixed(2)} h. ` +
-          `Bateria ${sim.depleted ? 'agotada' : 'no agotada'}; energia no suministrada: ${sim.unmetWh.toFixed(2)} Wh.`;
+          `${tr('energy.total', 'Energía total')}: ${totalEnergyWh(results).toFixed(2)} Wh. ` +
+          `${tr('energy.nightEndured', 'Noche resistida')}: ${sim.nightEnduredHours.toFixed(2)} h. ` +
+          `${sim.depleted ? tr('energy.depleted', 'Batería agotada') : tr('energy.notDepleted', 'Batería no agotada')}; ` +
+          `${tr('energy.unmet', 'energía no suministrada')}: ${sim.unmetWh.toFixed(2)} Wh.`;
         status.textContent = '';
 
         const last = results[results.length - 1];

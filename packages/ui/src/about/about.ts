@@ -40,20 +40,27 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
-/** Monta la pantalla "Acerca de y creditos". Solo textContent; nunca innerHTML. */
-export function mountAbout(container: HTMLElement, manifest: unknown): void {
+/**
+ * Monta la pantalla "Acerca de y creditos". Solo textContent; nunca innerHTML.
+ * `t` es opcional: traduce titulos (claves `about.*`); sin el se usa el texto en español.
+ */
+export function mountAbout(container: HTMLElement, manifest: unknown, t?: (key: string) => string): void {
   const doc = container.ownerDocument;
+  const tr = (key: string, fallback: string): string => {
+    const v = t?.(key);
+    return v && v !== key ? v : fallback;
+  };
   container.replaceChildren();
   const root = el(doc, 'section');
-  root.setAttribute('aria-label', 'Acerca de y créditos');
-  root.appendChild(el(doc, 'h2', 'Acerca de y créditos'));
-  root.appendChild(el(doc, 'p', DISCLAIMER));
-  root.appendChild(el(doc, 'p', NON_ENDORSEMENT));
+  root.setAttribute('aria-label', tr('about.title', 'Acerca de y créditos'));
+  root.appendChild(el(doc, 'h2', tr('about.title', 'Acerca de y créditos')));
+  root.appendChild(el(doc, 'p', tr('common.disclaimer', DISCLAIMER)));
+  root.appendChild(el(doc, 'p', t ? tr('about.nonEndorsement', NON_ENDORSEMENT) : NON_ENDORSEMENT));
 
-  root.appendChild(el(doc, 'h3', 'Créditos de assets'));
+  root.appendChild(el(doc, 'h3', tr('about.assets', 'Créditos de assets')));
   const result = validateManifest(manifest);
   if (!result.ok) {
-    const err = el(doc, 'p', `No se pudieron cargar los créditos: ${result.error}`);
+    const err = el(doc, 'p', `${tr('about.loadError', 'No se pudieron cargar los créditos')}: ${result.error}`);
     err.setAttribute('role', 'alert');
     root.appendChild(err);
   } else {
@@ -66,7 +73,7 @@ export function mountAbout(container: HTMLElement, manifest: unknown): void {
     root.appendChild(list);
   }
 
-  root.appendChild(el(doc, 'h3', 'Fuentes de datos'));
+  root.appendChild(el(doc, 'h3', tr('about.data', 'Fuentes de datos')));
   const sources = el(doc, 'ul');
   for (const c of DATA_CREDITS) {
     const li = el(doc, 'li');

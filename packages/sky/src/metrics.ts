@@ -74,6 +74,12 @@ export async function computeSiteMetrics(
 export function uncertaintyText(demResolutionM: number, lang: Language): string {
   const valid = Number.isFinite(demResolutionM) && demResolutionM > 0;
   const res = valid ? String(Math.round(demResolutionM * 10) / 10) : '?';
+  // Centinela del horizonte esferico de respaldo (radio lunar, sin DEM): ver docs/INTEGRACION.md.
+  if (valid && demResolutionM >= 1_000_000) {
+    return lang.toLowerCase().startsWith('es')
+      ? 'Sin modelo de terreno (DEM PENDIENTE): se usa un horizonte esférico ideal a 0°. Montañas y cráteres cercanos pueden adelantar la puesta o retrasar la salida del Sol y de la Tierra.'
+      : 'No terrain model (DEM PENDING): an ideal spherical horizon at 0° is used. Nearby mountains and craters can make the Sun and Earth set earlier or rise later.';
+  }
   if (lang.toLowerCase().startsWith('es')) {
     return valid
       ? `El horizonte se calcula con un modelo de terreno de ${res} m por pixel. Rasgos menores que eso no se ven, así que las horas de luz y de comunicación son aproximadas.`

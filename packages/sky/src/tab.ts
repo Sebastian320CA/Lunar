@@ -107,29 +107,46 @@ export function createSkyTab(deps: SkyTabDeps): PanelTab {
         host.appendChild(p);
       };
 
-      const updateCountdown = (utc: string): void => {
-        const ev = nextSetEvent(events, utc);
-        if (!ev) {
-          countdown.textContent = '--';
-          return;
+      const LABELS: Record<SkyEvent['type'], () => string> = {
+        sunset: () => tr('sky.sunsetIn', 'Puesta del Sol en'),
+        sunrise: () => tr('sky.sunriseIn', 'Salida del Sol en'),
+        earthset: () => tr('sky.earthsetIn', 'Puesta de la Tierra en'),
+        earthrise: () => tr('sky.earthriseIn', 'Salida de la Tierra en'),
+      };
+      /** Proximo evento de `body` (salida o puesta) posterior a `utc`. */
+      const nextOf = (body: 'sun' | 'earth', utc: string): SkyEvent | null => {
+        const now = Date.parse(utc);
+        let best: SkyEvent | null = null;
+        for (const e of events) {
+          if (!e.type.startsWith(body)) continue;
+          const ms = Date.parse(e.utc);
+          if (ms > now && (best === null || ms < Date.parse(best.utc))) best = e;
         }
-        const label =
-          ev.type === 'sunset' ? tr('sky.sunsetIn', 'Puesta del Sol en') : tr('sky.earthsetIn', 'Puesta de la Tierra en');
-        countdown.textContent = `${label} ${formatRemaining(Date.parse(ev.utc) - Date.parse(utc))}`;
+        return best;
+      };
+      const updateCountdown = (utc: string): void => {
+        // La puesta mas cercana sigue disponible en `data-countdown` (compatibilidad); se agregan las salidas.
+        const lines: string[] = [];
+        for (const body of ['sun', 'earth'] as const) {
+          const ev = nextOf(body, utc);
+          if (ev) lines.push(`${LABELS[ev.type]()} ${formatRemaining(Date.parse(ev.utc) - Date.parse(utc))}`);
+        }
+        countdown.textContent = lines.length > 0 ? lines.join(' · ') : '--';
       };
 
       const load = async (): Promise<void> => {
         const id = ++run;
         status.textContent = tr('sky.loading', 'Calculando...');
         try {
-          const end = isoPlus(ctx.utc, WINDOW_MS);
-          const mEnd = isoPlus(ctx.utc, METRICS_DAYS * 24 * 3600 * 1000);
+          const at = currentUtc;
+          const end = isoPlus(at, WINDOW_MS);
+          const mEnd = isoPlus(at, METRICS_DAYS * 24 * 3600 * 1000);
           if (!end || !mEnd) throw new Error('utc');
           const [sky, horizon, evs, m] = await Promise.all([
-            deps.getSky(ctx.site, ctx.utc),
+            deps.getSky(ctx.site, at),
             deps.getHorizon(ctx.site),
-            deps.findEvents(ctx.site, ctx.utc, end),
-            deps.getMetrics(ctx.site, ctx.utc, mEnd, 60),
+            deps.findEvents(ctx.site, at, end),
+            deps.getMetrics(ctx.site, at, mEnd, 60),
           ]);
           if (disposed || id !== run) return;
           events = evs;
@@ -141,17 +158,21 @@ export function createSkyTab(deps: SkyTabDeps): PanelTab {
             (sky.earth.aboveTerrainHorizon
               ? tr('sky.earthUp', 'La Tierra es visible.')
               : tr('sky.earthDown', 'La Tierra no es visible.'));
-          insertSvg(diagramHost, renderSkyDiagram({ horizon, sky, size: 480 }));
+          insertSvg(
+            diagramHost,
+            renderSkyDiagram({ horizon, sky, size: 480, sunLabel: tr('scene.sun', 'Sol'), earthLabel: tr('scene.earth', 'Tierra') }),
+          );
           tech.textContent = '';
-          addLine(tech, `Sol: az ${f1(sky.sun.azimuthDeg)}°, el ${f1(sky.sun.elevationDeg)}°`);
-          addLine(tech, `Tierra: az ${f1(sky.earth.azimuthDeg)}°, el ${f1(sky.earth.elevationDeg)}°`);
-          addLine(tech, `Elevación máxima del Sol: ${f1(m.maxSunElevationDeg)}°`);
-          addLine(tech, `Fracción iluminada: ${pct(m.sunlitFraction)}`);
-          addLine(tech, `Luz continua más larga: ${f1(m.longestLightHours)} h`);
-          addLine(tech, `Oscuridad continua más larga: ${f1(m.longestDarkHours)} h`);
-          addLine(tech, `Tierra visible: ${pct(m.earthVisibleFraction)}`);
-          addLine(tech, `Ventana de comunicación más larga: ${f1(m.longestCommsWindowHours)} h`);
-          addLine(tech, `Corte de comunicación más largo: ${f1(m.longestCommsGapHours)} h`);
+          addLine(tech, `${tr('scene.sun', 'Sol')}: az ${f1(sky.sun.azimuthDeg)}°, el ${f1(sky.sun.elevationDeg)}°`);
+          addLine(tech, `${tr('scene.earth', 'Tierra')}: az ${f1(sky.earth.azimuthDeg)}°, el ${f1(sky.earth.elevationDeg)}°`);
+          addLine(tech, `${tr('sky.windowNote', 'Próximos 30 días')}:`);
+          addLine(tech, `${tr('sky.maxSunEl', 'Elevación máxima del Sol')}: ${f1(m.maxSunElevationDeg)}°`);
+          addLine(tech, `${tr('sky.sunlit', 'Fracción iluminada')}: ${pct(m.sunlitFraction)}`);
+          addLine(tech, `${tr('sky.longestLight', 'Luz continua más larga')}: ${f1(m.longestLightHours)} h`);
+          addLine(tech, `${tr('sky.longestDark', 'Oscuridad continua más larga')}: ${f1(m.longestDarkHours)} h`);
+          addLine(tech, `${tr('sky.earthVisible', 'Tierra visible')}: ${pct(m.earthVisibleFraction)}`);
+          addLine(tech, `${tr('sky.commsWindow', 'Ventana de comunicación más larga')}: ${f1(m.longestCommsWindowHours)} h`);
+          addLine(tech, `${tr('sky.commsGap', 'Corte de comunicación más largo')}: ${f1(m.longestCommsGapHours)} h`);
           addLine(tech, uncertaintyText(m.demResolutionM, deps.lang?.() ?? 'es'));
           if (meta) addLine(tech, `${meta.source}${meta.note ? `: ${meta.note}` : ''}`);
           updateCountdown(currentUtc);
@@ -162,15 +183,28 @@ export function createSkyTab(deps: SkyTabDeps): PanelTab {
       };
 
       const time = deps.time?.();
+      let loadedAt = currentUtc;
+      let reload: ReturnType<typeof setTimeout> | undefined;
       const unsub = time?.onChange((u) => {
         currentUtc = u;
         updateCountdown(u);
+        // Recalcula el cielo si la hora se movio mas de 10 minutos (con espera para no saturar).
+        if (Math.abs(Date.parse(u) - Date.parse(loadedAt)) > 10 * 60_000) {
+          if (reload !== undefined) clearTimeout(reload);
+          reload = setTimeout(() => {
+            reload = undefined;
+            loadedAt = currentUtc;
+            void load();
+          }, 400);
+        }
       });
       if (time) currentUtc = time.getUtc();
+      loadedAt = currentUtc;
       void load();
 
       return () => {
         disposed = true;
+        if (reload !== undefined) clearTimeout(reload);
         unsub?.();
         root.remove();
       };

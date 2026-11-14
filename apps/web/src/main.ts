@@ -1,3 +1,4 @@
+import './shell/app.css';
 import { createContext, type WebContext, type WebModule } from './modules/context';
 import { showErrorScreen } from './shell/errorScreen';
 import { mountShell } from './shell';
@@ -69,15 +70,52 @@ async function loadManifest(url: string): Promise<unknown> {
   }
 }
 
+/** Pantalla de carga (bilingue: el idioma aun no se conoce) con barra de progreso por modulo. */
+function createSplash(): { step(done: number, name: string): void; remove(): void } {
+  const box = document.createElement('div');
+  box.className = 'ln-boot';
+  box.setAttribute('role', 'status');
+  const moon = document.createElement('div');
+  moon.className = 'ln-boot-moon';
+  const title = document.createElement('p');
+  title.textContent = 'Lunar Navigator';
+  const bar = document.createElement('div');
+  bar.className = 'ln-boot-bar';
+  const fill = document.createElement('span');
+  bar.append(fill);
+  const text = document.createElement('p');
+  text.className = 'ln-boot-text';
+  text.textContent = 'Cargando… / Loading…';
+  box.append(moon, title, bar, text);
+  document.body.append(box);
+  return {
+    step(done, name) {
+      fill.style.width = `${Math.round((done / MODULES.length) * 100)}%`;
+      text.textContent = `Cargando… / Loading… (${name})`;
+    },
+    remove() {
+      box.remove();
+    },
+  };
+}
+
 async function bootstrap(): Promise<void> {
   const root = document.getElementById('app');
   if (!root) throw new Error('Falta el elemento #app.');
   const ctx = createContext({ demo: __LUNAR_DEMO__ });
-  for (const [name, load] of MODULES) {
-    await loadModule(ctx, name, load);
+  const splash = createSplash();
+  try {
+    let done = 0;
+    for (const [name, load] of MODULES) {
+      splash.step(done, name);
+      await loadModule(ctx, name, load);
+      done++;
+    }
+    const manifest = await loadManifest(ctx.assetUrl('manifest.json'));
+    mountShell(root, ctx, { manifest });
+  } finally {
+    splash.remove();
   }
-  const manifest = await loadManifest(ctx.assetUrl('manifest.json'));
-  mountShell(root, ctx, { manifest });
 }
 
 bootstrap().catch((error: unknown) => {

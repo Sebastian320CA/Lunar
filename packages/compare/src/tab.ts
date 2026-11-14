@@ -63,7 +63,11 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, text?: string): HTMLE
 }
 
 export function createCompareTab(deps: CompareTabDeps): PanelTab {
-  const tr = (k: string): string => deps.t?.(k) ?? k;
+  /** Traduce con respaldo: i18n devuelve la propia clave si falta. */
+  const tr = (k: string, fallback?: string): string => {
+    const v = deps.t?.(k);
+    return v && v !== k ? v : (fallback ?? k);
+  };
 
   return {
     id: COMPARE_TAB_ID,
@@ -75,13 +79,16 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
       const weights: ViabilityWeights = { ...DEFAULT_WEIGHTS };
 
       const root = el('div');
-      root.appendChild(el('h3', tr('compare.title')));
+      root.appendChild(el('h3', tr('compare.title', 'Comparar sitios')));
       root.appendChild(
         el(
           'p',
-          'Compara hasta 3 escenarios (sitio e intervalo UTC). El indice de viabilidad es un promedio ponderado de ' +
-            'componentes normalizados de 0 a 100; ajusta los pesos para ver como cambia el orden. Los resultados ' +
-            'dependen del sitio y de las fechas elegidas, no son una prediccion de mision.',
+          tr(
+            'compare.intro',
+            'Compara hasta 3 escenarios (sitio e intervalo UTC). El indice de viabilidad es un promedio ponderado de ' +
+              'componentes normalizados de 0 a 100; ajusta los pesos para ver como cambia el orden. Los resultados ' +
+              'dependen del sitio y de las fechas elegidas, no son una prediccion de mision.',
+          ),
         ),
       );
 
@@ -100,7 +107,8 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
         o.selected = true;
         sitePick.appendChild(o);
       }
-      const siteLabel = el('label', 'Sitio ');
+      const siteName = (id: string): string => sites.find((x) => x.id === id)?.name ?? (id === ctx.site.id ? ctx.site.name : id);
+      const siteLabel = el('label', `${tr('compare.site', 'Sitio')} `);
       siteLabel.appendChild(sitePick);
 
       const startMs = Date.parse(ctx.utc);
@@ -111,14 +119,14 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
       const endIn = el('input');
       endIn.type = 'text';
       endIn.value = Number.isFinite(startMs) ? iso(startMs + 3 * DAY_MS) : ctx.utc;
-      const startLabel = el('label', 'Inicio UTC ');
+      const startLabel = el('label', `${tr('compare.start', 'Inicio UTC')} `);
       startLabel.appendChild(startIn);
-      const endLabel = el('label', 'Fin UTC ');
+      const endLabel = el('label', `${tr('compare.end', 'Fin UTC')} `);
       endLabel.appendChild(endIn);
 
-      const addBtn = el('button', 'Agregar escenario');
+      const addBtn = el('button', tr('compare.add', 'Agregar escenario'));
       addBtn.type = 'button';
-      const clearBtn = el('button', 'Limpiar');
+      const clearBtn = el('button', tr('compare.clear', 'Limpiar'));
       clearBtn.type = 'button';
       const status = el('p');
       status.setAttribute('role', 'status');
@@ -127,11 +135,11 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
 
       // Weights.
       const wBox = el('fieldset');
-      wBox.appendChild(el('legend', 'Pesos del indice de viabilidad'));
+      wBox.appendChild(el('legend', tr('compare.weights', 'Pesos del indice de viabilidad')));
       const wOut = new Map<string, HTMLElement>();
       (Object.keys(DEFAULT_WEIGHTS) as (keyof ViabilityWeights)[]).forEach((k) => {
         const row = el('div');
-        const label = el('label', `${WEIGHT_LABELS[k]} `);
+        const label = el('label', `${tr(`compare.weight.${k}`, WEIGHT_LABELS[k])} `);
         const input = el('input');
         input.type = 'range';
         input.min = '0';
@@ -155,7 +163,7 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
       const results = el('div');
       results.setAttribute('aria-live', 'polite');
       const charts = el('div');
-      const sensBtn = el('button', 'Por que cambia tanto');
+      const sensBtn = el('button', tr('compare.whyChanges', 'Por que cambia tanto'));
       sensBtn.type = 'button';
       const sensOut = el('div');
       root.append(results, charts, sensBtn, sensOut);
@@ -167,7 +175,7 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
       const renderList = (): void => {
         listEl.textContent = '';
         for (const s of scenarios) {
-          listEl.appendChild(el('li', `${s.siteId}: ${s.utcStart} a ${s.utcEnd}`));
+          listEl.appendChild(el('li', `${siteName(s.siteId)}: ${s.utcStart} → ${s.utcEnd}`));
         }
       };
 
@@ -185,7 +193,13 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
           if (disposed || my !== run) return;
           const table = el('table');
           const head = el('tr');
-          for (const h of ['Escenario', 'Indice (0-100)', 'Iluminada', 'Tierra visible', 'Noche mas larga (h)']) {
+          for (const h of [
+            tr('compare.col.scenario', 'Escenario'),
+            tr('compare.col.index', 'Indice (0-100)'),
+            tr('compare.col.sunlit', 'Iluminada'),
+            tr('compare.col.earth', 'Tierra visible'),
+            tr('compare.col.night', 'Noche mas larga (h)'),
+          ]) {
             head.appendChild(el('th', h));
           }
           table.appendChild(head);
@@ -194,7 +208,7 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
             const v = viabilityIndex(row.metrics, weights, hours);
             const tr_ = el('tr');
             tr_.append(
-              el('td', `${i + 1}. ${row.scenario.siteId}`),
+              el('td', `${i + 1}. ${siteName(row.scenario.siteId)}`),
               el('td', v.score.toFixed(1)),
               el('td', row.metrics.sunlitFraction.toFixed(3)),
               el('td', row.metrics.earthVisibleFraction.toFixed(3)),
@@ -203,9 +217,9 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
             table.appendChild(tr_);
           });
           results.appendChild(table);
-          const labels = cmp.sideBySide.map((r, i) => `${i + 1}. ${r.scenario.siteId}`);
+          const labels = cmp.sideBySide.map((r, i) => `${i + 1}. ${siteName(r.scenario.siteId).slice(0, 18)}`);
           for (const m of CHART_METRICS) {
-            insertSvg(charts, barChartSvg(cmp.sideBySide, m.key, labels, m.title));
+            insertSvg(charts, barChartSvg(cmp.sideBySide, m.key, labels, tr(`compare.chart.${m.key}`, m.title)));
           }
           status.textContent = '';
         } catch (e) {
@@ -217,7 +231,7 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
         const a = parseUtc(startIn.value);
         const b = parseUtc(endIn.value);
         if (!a || !b || Date.parse(b) <= Date.parse(a)) {
-          status.textContent = 'Fechas UTC invalidas: usa formato ISO con Z y fin posterior al inicio.';
+          status.textContent = tr('compare.badDates', 'Fechas UTC invalidas: usa formato ISO con Z y fin posterior al inicio.');
           return;
         }
         const r = addScenario(scenarios, { siteId: sitePick.value, utcStart: a, utcEnd: b });
@@ -239,7 +253,7 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
         const a = parseUtc(startIn.value);
         const b = parseUtc(endIn.value);
         if (!a || !b || Date.parse(b) <= Date.parse(a)) {
-          status.textContent = 'Fechas UTC invalidas para el analisis de sensibilidad.';
+          status.textContent = tr('compare.badDatesSens', 'Fechas UTC invalidas para el analisis de sensibilidad.');
           return;
         }
         const site = sites.find((s) => s.id === sitePick.value) ?? ctx.site;
@@ -251,9 +265,18 @@ export function createCompareTab(deps: CompareTabDeps): PanelTab {
         })
           .then((entries) => {
             if (disposed || my !== run) return;
-            insertSvg(sensOut, sensitivityLineSvg(entries, 'sunlitFraction', 'Sensibilidad: fraccion iluminada'));
+            insertSvg(
+              sensOut,
+              sensitivityLineSvg(entries, 'sunlitFraction', tr('compare.sensTitle', 'Sensibilidad: fraccion iluminada')),
+            );
             sensOut.appendChild(
-              el('p', 'Desplazar el sitio unos km (norte positivo) o las fechas unos dias puede cambiar mucho la iluminacion.'),
+              el(
+                'p',
+                tr(
+                  'compare.sensNote',
+                  'Desplazar el sitio unos km (norte positivo) o las fechas unos dias puede cambiar mucho la iluminacion.',
+                ),
+              ),
             );
           })
           .catch((e: unknown) => {
