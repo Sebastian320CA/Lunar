@@ -1,0 +1,65 @@
+﻿/* Lunar Navigator design tokens. Plain CSS file: no inline styles, CSP-safe. */
+:root {
+  --ln-color-bg: #f5f6f8;
+  --ln-color-surface: #ffffff;
+  --ln-color-text: #14171c;
+  --ln-color-muted: #4b5563;
+  --ln-color-border: #c9ced6;
+  --ln-color-accent: #1f5fbf;
+  --ln-color-accent-contrast: #ffffff;
+  --ln-color-warning: #8a5a00;
+  --ln-color-danger: #b42318;
+  --ln-color-scrim: rgba(10, 12, 18, 0.55);
+  --ln-font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ln-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --ln-font-size-sm: 0.875rem;
+  --ln-font-size-md: 1rem;
+  --ln-font-size-lg: 1.25rem;
+  --ln-font-size-xl: 1.75rem;
+  --ln-line-height: 1.5;
+  --ln-space-1: 0.25rem;
+  --ln-space-2: 0.5rem;
+  --ln-space-3: 0.75rem;
+  --ln-space-4: 1rem;
+  --ln-space-6: 1.5rem;
+  --ln-space-8: 2rem;
+  --ln-radius: 0.5rem;
+  --ln-focus-ring: 0 0 0 3px rgba(31, 95, 191, 0.6);
+  --ln-motion-duration: 280ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ln-color-bg: #0b0e14;
+    --ln-color-surface: #151a23;
+    --ln-color-text: #e8ecf2;
+    --ln-color-muted: #a3adbb;
+    --ln-color-border: #2d3544;
+    --ln-color-accent: #6ea8ff;
+    --ln-color-accent-contrast: #0b0e14;
+    --ln-color-warning: #f0b84a;
+    --ln-color-danger: #ff8a80;
+    --ln-color-scrim: rgba(0, 0, 0, 0.65);
+    --ln-focus-ring: 0 0 0 3px rgba(110, 168, 255, 0.7);
+  }
+}
+
+:root[data-theme="dark"] {
+  --ln-color-bg: #0b0e14;
+  --ln-color-surface: #151a23;
+  --ln-color-text: #e8ecf2;
+  --ln-color-muted: #a3adbb;
+  --ln-color-border: #2d3544;
+  --ln-color-accent: #6ea8ff;
+  --ln-color-accent-contrast: #0b0e14;
+  --ln-color-warning: #f0b84a;
+  --ln-color-danger: #ff8a80;
+  --ln-color-scrim: rgba(0, 0, 0, 0.65);
+  --ln-focus-ring: 0 0 0 3px rgba(110, 168, 255, 0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ln-motion-duration: 0ms;
+  }
+}

@@ -9,3 +9,6 @@ Thumbs.db
 # datos pesados que se descargan con scripts
 data/ephemeris/kernels/
 data/terrain/raw/
+dist-demo/
+# decodificadores copiados desde three
+public/assets/decoders/

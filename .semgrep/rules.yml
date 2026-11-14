@@ -1,0 +1,97 @@
+rules:
+  - id: lunar-no-eval
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: "eval() está prohibido (Requirement 12.5)."
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: $G.eval(...)
+
+  - id: lunar-no-new-function
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: "new Function(...) y Function(...) están prohibidos (Requirement 12.5)."
+    pattern-either:
+      - pattern: new Function(...)
+      - pattern: Function(...)
+
+  - id: lunar-no-string-timers
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: "setTimeout/setInterval con una cadena evalúa código; pasa una función (Requirement 12.5)."
+    pattern-either:
+      - pattern: setTimeout("...", ...)
+      - pattern: setInterval("...", ...)
+      - pattern: setTimeout($A + $B, ...)
+      - pattern: setInterval($A + $B, ...)
+      - pattern: $G.setTimeout("...", ...)
+      - pattern: $G.setInterval("...", ...)
+
+  - id: lunar-no-dynamic-innerhtml
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: "Asignar a .innerHTML un valor no literal es inseguro; usa textContent o createElement (Requirement 12.5)."
+    patterns:
+      - pattern: $EL.innerHTML = $V
+      - pattern-not: $EL.innerHTML = "..."
+
+  - id: lunar-no-document-write
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: "document.write/writeln están prohibidos (Requirement 12.5)."
+    pattern-either:
+      - pattern: document.write(...)
+      - pattern: document.writeln(...)
+
+  - id: lunar-no-network-outside-local-fetch
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: "Las APIs de red solo pueden usarse en apps/web/src/net/localFetch.ts (Requirement 12.8)."
+    paths:
+      exclude:
+        - apps/web/src/net/localFetch.ts
+    pattern-either:
+      - pattern: fetch(...)
+      - pattern: $G.fetch(...)
+      - pattern: new XMLHttpRequest(...)
+      - pattern: new $G.XMLHttpRequest(...)
+      - pattern: new WebSocket(...)
+      - pattern: new $G.WebSocket(...)
+      - pattern: new EventSource(...)
+      - pattern: new $G.EventSource(...)
+      - pattern: sendBeacon(...)
+      - pattern: $G.sendBeacon(...)
+      - pattern: importScripts(...)
+      - pattern: $G.importScripts(...)
+
+  # Control compensatorio de eslint-plugin-security/detect-object-injection (D1).
+  - id: lunar-no-prototype-key-access
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: "Acceso con corchetes usando __proto__, constructor o prototype como índice (contaminación de prototipo)."
+    patterns:
+      - pattern: $O[$K]
+      - metavariable-regex:
+          metavariable: $K
+          regex: ^["'`]?(__proto__|constructor|prototype)["'`]?$
+
+  # Los stubs solo pueden importarse dinámicamente (tree-shaking en producción, Requirement 10.18).
+  - id: lunar-no-static-stub-import
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: "Import estático de un stub; usa import() dentro de la rama __LUNAR_DEMO__ (Requirement 10.18)."
+    paths:
+      exclude:
+        - apps/web/src/stubs
+        - apps/web/test
+    patterns:
+      - pattern-either:
+          - pattern: import $X from "$SRC"
+          - pattern: import {...} from "$SRC"
+          - pattern: import * as $X from "$SRC"
+          - pattern: import "$SRC"
+          - pattern: export {...} from "$SRC"
+          - pattern: export * from "$SRC"
+      - metavariable-regex:
+          metavariable: $SRC
+          regex: (^|.*/)stubs/.*

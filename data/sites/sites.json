@@ -1,0 +1,13 @@
+[
+  {"id":"apollo-11","name":"Apollo 11 (Mare Tranquillitatis)","program":"apollo","latDeg":0.67416,"lonDeg":23.47314,"source":"https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html (Lunar Module, LRO images, Wagner et al. 2017)","verified":true},
+  {"id":"apollo-12","name":"Apollo 12 (Oceanus Procellarum)","program":"apollo","latDeg":-3.0128,"lonDeg":-23.4219,"source":"https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html (Lunar Module, LRO images, Wagner et al. 2017)","verified":true},
+  {"id":"apollo-14","name":"Apollo 14 (Fra Mauro)","program":"apollo","latDeg":-3.64589,"lonDeg":-17.47194,"source":"https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html (Lunar Module, LRO images, Wagner et al. 2017)","verified":true},
+  {"id":"apollo-15","name":"Apollo 15 (Hadley-Apennine)","program":"apollo","latDeg":26.13239,"lonDeg":3.6333,"source":"https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html (Lunar Module, LRO images, Wagner et al. 2017)","verified":true},
+  {"id":"apollo-16","name":"Apollo 16 (Descartes)","program":"apollo","latDeg":-8.9734,"lonDeg":15.5011,"source":"https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html (Lunar Module, LRO images, Wagner et al. 2017)","verified":true},
+  {"id":"apollo-17","name":"Apollo 17 (Taurus-Littrow)","program":"apollo","latDeg":20.1911,"lonDeg":30.7723,"source":"https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html (Lunar Module, LRO images, Wagner et al. 2017)","verified":true},
+  {"id":"clps-im-1-odysseus","name":"IM-1 Odysseus (near Malapert A)","program":"clps","latDeg":-80.13,"lonDeg":1.44,"elevM":2579,"source":"https://nasa.gov/missions/lro/nasas-lro-images-intuitive-machines-odysseus-lander (LRO image)","verified":true},
+  {"id":"clps-blue-ghost-m1","name":"Blue Ghost Mission 1 (Mare Crisium)","program":"clps","latDeg":18.562,"lonDeg":61.81,"elevM":-3650,"source":"https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=BLUEGHOST","verified":true},
+  {"id":"intl-slim","name":"SLIM (near Shioli crater)","program":"international","latDeg":-13.316,"lonDeg":25.251,"elevM":-912,"source":"https://www.nasa.gov/solar-system/nasas-lro-spots-japans-moon-lander/ (LRO image)","verified":true},
+  {"id":"intl-chandrayaan-3","name":"Chandrayaan-3 Vikram (near south pole)","program":"international","latDeg":-69.3741,"lonDeg":32.32,"elevM":532,"source":"https://www.lroc.asu.edu/posts/1314 (LROC)","verified":true},
+  {"id":"intl-change-4","name":"Chang'e 4 (Von Karman crater)","program":"international","latDeg":-45.4561,"lonDeg":177.5885,"elevM":-5927,"source":"https://www.lroc.asu.edu/posts/1100 (LROC)","verified":true}
+]

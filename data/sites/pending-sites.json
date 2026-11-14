@@ -1,0 +1,17 @@
+[
+  {"id":"artemis-peak-near-cabeus-b","name":"Artemis III region: Peak near Cabeus B","program":"international","sourceToConfirm":"NASA Artemis III candidate regions (https://ntrs.nasa.gov/citations/20250011660) and LROC QuickMap https://quickmap.lroc.im-ldi.com/"},
+  {"id":"artemis-haworth","name":"Artemis III region: Haworth","program":"international","sourceToConfirm":"NASA Artemis III candidate regions (https://ntrs.nasa.gov/citations/20250011660) and USGS Gazetteer of Planetary Nomenclature"},
+  {"id":"artemis-malapert-massif","name":"Artemis III region: Malapert Massif","program":"international","sourceToConfirm":"NASA Artemis III candidate regions (https://ntrs.nasa.gov/citations/20250011660) and USGS Gazetteer of Planetary Nomenclature"},
+  {"id":"artemis-mons-mouton-plateau","name":"Artemis III region: Mons Mouton Plateau","program":"international","sourceToConfirm":"NASA Artemis III candidate regions (https://ntrs.nasa.gov/citations/20250011660) and LROC QuickMap"},
+  {"id":"artemis-mons-mouton","name":"Artemis III region: Mons Mouton","program":"international","sourceToConfirm":"NASA Artemis III candidate regions (https://ntrs.nasa.gov/citations/20250011660) and LROC QuickMap"},
+  {"id":"artemis-nobile-rim-1","name":"Artemis III region: Nobile Rim 1","program":"international","sourceToConfirm":"NASA Artemis III candidate regions (https://ntrs.nasa.gov/citations/20250011660) and LROC QuickMap"},
+  {"id":"artemis-nobile-rim-2","name":"Artemis III region: Nobile Rim 2","program":"international","sourceToConfirm":"NASA Artemis III candidate regions (https://ntrs.nasa.gov/citations/20250011660) and LROC QuickMap"},
+  {"id":"artemis-de-gerlache-rim-2","name":"Artemis III region: de Gerlache Rim 2","program":"international","sourceToConfirm":"NASA Artemis III candidate regions (https://ntrs.nasa.gov/citations/20250011660) and LROC QuickMap"},
+  {"id":"artemis-slater-plain","name":"Artemis III region: Slater Plain","program":"international","sourceToConfirm":"NASA Artemis III candidate regions (https://ntrs.nasa.gov/citations/20250011660) and LROC QuickMap"},
+  {"id":"clps-im-2","name":"CLPS IM-2 (Intuitive Machines, Mons Mouton)","program":"clps","sourceToConfirm":"LROC post or NASA release after landing; NSSDCA spacecraft page"},
+  {"id":"clps-blue-ghost-m2","name":"CLPS Blue Ghost Mission 2 (far side)","program":"clps","sourceToConfirm":"NASA CLPS press kit / NSSDCA spacecraft page"},
+  {"id":"clps-griffin-1","name":"CLPS Astrobotic Griffin Mission 1","program":"clps","sourceToConfirm":"NASA CLPS press kit / NSSDCA spacecraft page"},
+  {"id":"commercial-ispace-m2","name":"ispace Hakuto-R Mission 2 (Mare Frigoris)","program":"commercial","sourceToConfirm":"ispace mission page and LROC post"},
+  {"id":"intl-change-6","name":"Chang'e 6 (Apollo basin)","program":"international","sourceToConfirm":"NSSDCA spacecraft page or LROC post"},
+  {"id":"intl-change-3","name":"Chang'e 3 (Mare Imbrium)","program":"international","sourceToConfirm":"NSSDCA spacecraft page or LROC post"}
+]

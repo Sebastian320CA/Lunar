@@ -1,0 +1,109 @@
+{
+  "_meta": {
+    "status": "reviewed"
+  },
+  "common": {
+    "appName": "Lunar Landing Site Navigator",
+    "disclaimer": "Inspirado en NASA Space Apps - No avalado por la NASA",
+    "ok": "Aceptar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "back": "Volver",
+    "loading": "Cargando...",
+    "language": "Idioma",
+    "offline": "Modo sin conexión"
+  },
+  "menu": {
+    "title": "Menú principal",
+    "explore": "Explorar sitios",
+    "compare": "Comparar sitios",
+    "energy": "Energía solar",
+    "learn": "Aprender",
+    "games": "Minijuegos",
+    "settings": "Ajustes",
+    "about": "Acerca de",
+    "chooseLanguage": "Elige tu idioma"
+  },
+  "panel": {
+    "close": "Cerrar",
+    "summary": "Resumen",
+    "name": "Nombre",
+    "program": "Programa",
+    "coordinates": "Coordenadas",
+    "source": "Fuente",
+    "verified": "Verificado",
+    "unverified": "Sin verificar",
+    "pending": "PENDIENTE",
+    "sites": {
+      "one": "{count} sitio",
+      "other": "{count} sitios"
+    }
+  },
+  "about": {
+    "title": "Acerca de",
+    "credits": "Créditos",
+    "data": "Datos y herramientas",
+    "nonEndorsement": "La NASA no avala a entidades que no son parte del gobierno de EE. UU.",
+    "license": "Licencia"
+  },
+  "scene": {
+    "moon": "Luna",
+    "earth": "Tierra",
+    "sun": "Sol",
+    "horizon": "Horizonte",
+    "zoomIn": "Acercar",
+    "zoomOut": "Alejar",
+    "reset": "Restablecer vista",
+    "directComms": "Comunicación directa con la Tierra"
+  },
+  "time": {
+    "date": "Fecha",
+    "utc": "Hora UTC",
+    "play": "Reproducir",
+    "pause": "Pausar",
+    "step": "Paso",
+    "minutes": {
+      "one": "{count} minuto",
+      "other": "{count} minutos"
+    },
+    "days": {
+      "one": "{count} día",
+      "other": "{count} días"
+    }
+  },
+  "errors": {
+    "generic": "Algo salió mal.",
+    "invalidInput": "Entrada no válida.",
+    "fileTooLarge": "El archivo es demasiado grande.",
+    "invalidFile": "El archivo no es válido.",
+    "dataMissing": "Datos no disponibles."
+  },
+  "compare": {
+    "title": "Comparar sitios"
+  },
+  "energy": {
+    "title": "Energ?a solar"
+  },
+  "games": {
+    "title": "Minijuegos",
+    "projectile": "Proyectil",
+    "blocks": "Carga",
+    "explorer": "Explorador"
+  },
+  "edu": {
+    "title": "Trivia",
+    "lang": "es"
+  },
+  "sky": {
+    "tab": "Sol y Tierra",
+    "approximate": "Datos aproximados",
+    "technical": "Detalle t?cnico",
+    "sunsetIn": "Puesta del Sol en",
+    "earthsetIn": "Puesta de la Tierra en",
+    "loading": "Calculando...",
+    "sunUp": "El Sol est? sobre el horizonte.",
+    "sunDown": "El Sol est? bajo el horizonte.",
+    "earthUp": "La Tierra es visible.",
+    "earthDown": "La Tierra no es visible."
+  }
+}

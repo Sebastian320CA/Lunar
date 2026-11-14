@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "frame": "MOON_ME_DE440_ME421",
+  "startUtc": "2025-01-01T00:00:00Z",
+  "stepSeconds": 600,
+  "count": 262945,
+  "units": "km",
+  "fields": [
+    "sunX",
+    "sunY",
+    "sunZ",
+    "earthX",
+    "earthY",
+    "earthZ"
+  ],
+  "sha256": "bf037e782ea423b77aec655f13b40db6f04511fef579d1bcec953910479bd499"
+}

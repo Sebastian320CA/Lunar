@@ -1,10 +1,15 @@
 {
-    "name":  "@lunar/security",
-    "version":  "0.0.0",
-    "private":  true,
-    "type":  "module",
-    "main":  "src/index.ts",
-    "scripts":  {
-                    "test":  "vitest run --passWithNoTests"
-                }
+  "name": "@lunar/security",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc --noEmit -p .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@lunar/contracts": "workspace:*",
+    "zod": "4.6.7"
+  }
 }

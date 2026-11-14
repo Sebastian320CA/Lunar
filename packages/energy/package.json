@@ -5,6 +5,14 @@
     "type":  "module",
     "main":  "src/index.ts",
     "scripts":  {
+                    "build":  "tsc --noEmit -p .",
                     "test":  "vitest run --passWithNoTests"
-                }
+                },
+    "dependencies":  {
+                         "@lunar/contracts":  "workspace:*",
+                         "@lunar/security":  "workspace:*"
+                     },
+    "devDependencies":  {
+                            "fast-check":  "4.10.2"
+                        }
 }

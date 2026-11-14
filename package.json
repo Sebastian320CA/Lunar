@@ -4,10 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "pnpm -r test"
+    "lint": "eslint -c tools/lint/eslint.config.js .",
+    "typecheck": "pnpm -r build",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build",
+    "check:versions": "node packages/contracts/scripts/check-versions.ts",
+    "check:docs": "node packages/contracts/scripts/check-contract-docs.ts && node packages/contracts/scripts/check-security-doc.ts",
+    "check:workflows": "node packages/contracts/scripts/check-workflows.ts"
   },
   "devDependencies": {
-    "typescript": "^7.0.2",
-    "vitest": "^5.1.0"
+    "@types/node": "22.20.5",
+    "eslint": "10.14.0",
+    "fast-check": "4.10.2",
+    "jsdom": "31.0.1",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
   }
 }

@@ -1,0 +1,19 @@
+.lunar-error-screen {
+  max-width: 40rem;
+  margin: 4rem auto;
+  padding: 1.5rem;
+  border: 2px solid #c0392b;
+  border-radius: 8px;
+  background: #1b1b1f;
+  color: #f2f2f2;
+  font-family: system-ui, sans-serif;
+}
+.lunar-error-message {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.lunar-error-screen button {
+  padding: 0.5rem 1.25rem;
+  font: inherit;
+  cursor: pointer;
+}

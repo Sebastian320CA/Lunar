@@ -1,20 +1,70 @@
 {
-  "version": 1,
-  "models": [
-    {
-      "id": "apollo-lm",
-      "path": "/assets/models/apollo-lm.glb",
-      "unitsToMeters": 1,
-      "upAxis": "Y",
-      "nodes": [],
-      "polygons": 0,
-      "license": "NASA media usage guidelines",
-      "credit": "NASA 3D Resources"
-    }
-  ],
-  "textures": [
-    { "id": "moon-color", "path": "/assets/textures/moon-color.webp", "credit": "NASA SVS CGI Moon Kit" },
-    { "id": "moon-height", "path": "/assets/textures/moon-height.webp", "credit": "NASA SVS / LRO LOLA" },
-    { "id": "earth-color", "path": "/assets/textures/earth-color.webp", "credit": "NASA Earth Observatory, Blue Marble NG" }
-  ]
+    "version":  1,
+    "models":  [
+                   {
+                       "id":  "apollo-lm",
+                       "path":  "models/apollo-lm.glb",
+                       "unitsToMeters":  1,
+                       "upAxis":  "Y",
+                       "nodes":  [
+
+                                 ],
+                       "polygons":  0,
+                       "license":  "NASA media usage guidelines",
+                       "credit":  "NASA 3D Resources"
+                   },
+                   {
+                       "id":  "moon-glb",
+                       "path":  "models/Moon_1_3474.glb",
+                       "unitsToMeters":  1,
+                       "upAxis":  "Y",
+                       "nodes":  [
+
+                                 ],
+                       "polygons":  0,
+                       "license":  "PENDIENTE (confirmar licencia)",
+                       "credit":  "PENDIENTE (confirmar origen)"
+                   },
+                   {
+                       "id":  "earth-glb",
+                       "path":  "models/Earth_1_12756.glb",
+                       "unitsToMeters":  1,
+                       "upAxis":  "Y",
+                       "nodes":  [
+
+                                 ],
+                       "polygons":  0,
+                       "license":  "PENDIENTE (confirmar licencia)",
+                       "credit":  "PENDIENTE (confirmar origen)"
+                   },
+                   {
+                       "id":  "aeronomy-ice-mesosphere",
+                       "path":  "models/Aeronomy of Ice in the Mesosphere.glb",
+                       "unitsToMeters":  1,
+                       "upAxis":  "Y",
+                       "nodes":  [
+
+                                 ],
+                       "polygons":  0,
+                       "license":  "PENDIENTE (confirmar licencia)",
+                       "credit":  "PENDIENTE (confirmar origen)"
+                   }
+               ],
+    "textures":  [
+                     {
+                         "id":  "moon-color",
+                         "path":  "textures/moon-color.webp",
+                         "credit":  "NASA SVS CGI Moon Kit"
+                     },
+                     {
+                         "id":  "moon-height",
+                         "path":  "textures/moon-height.webp",
+                         "credit":  "NASA SVS / LRO LOLA"
+                     },
+                     {
+                         "id":  "earth-color",
+                         "path":  "textures/earth-color.webp",
+                         "credit":  "NASA Earth Observatory, Blue Marble NG"
+                     }
+                 ]
 }

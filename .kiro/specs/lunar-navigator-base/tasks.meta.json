@@ -1,0 +1,422 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Configurar `.npmrc`, versiones exactas y scripts raíz": [
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678415432
+      },
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678744360
+      }
+    ],
+    "1. Preparar la base del monorepo": [
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678744438
+      }
+    ],
+    "2.1 Definir tipos, interfaces y constantes en `src/index.ts`": [
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678750425
+      },
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678890953
+      }
+    ],
+    "3.1 Implementar `checkVersions` y su CLI": [
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678902135
+      },
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678999409
+      }
+    ],
+    "3.3 Implementar `checkContractDocs` y su CLI": [
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678902235
+      },
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678999523
+      }
+    ],
+    "3.5 Implementar `checkWorkflows` y su CLI": [
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678902906
+      },
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678999639
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679028064
+      }
+    ],
+    "3.7 Implementar `checkSecurityDoc` y su CLI": [
+      {
+        "executionId": "9f482eaf-f6f8-41f7-832b-d7177cb8799b",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794678903773
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679015799
+      }
+    ],
+    "3. Scripts de verificación en Contracts": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679028147
+      }
+    ],
+    "2.2 Crear el esquema zod del Manifest en `src/manifest.ts`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679038493
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679206627
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679391431
+      }
+    ],
+    "2.3 Implementar `registerPanelTab` y `getPanelTabs`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679038587
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679591850
+      },
+      {
+        "executionId": "d7d40c51-01ba-45df-b074-f92f8d94da5e",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679736299
+      }
+    ],
+    "2.9 Migrar `public/assets/manifest.json` y `tools/validate-assets.ps1`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679038648
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679597719
+      },
+      {
+        "executionId": "d7d40c51-01ba-45df-b074-f92f8d94da5e",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679739954
+      }
+    ],
+    "2.10 Escribir pruebas del manifest real y de la resolución de rutas": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679038711
+      }
+    ],
+    "4. Checkpoint - Contracts y scripts": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679038783
+      }
+    ],
+    "5.1 Implementar validadores de latitud, longitud, fecha UTC e id de sitio": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679038868
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679210016
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679396098
+      }
+    ],
+    "5.8 Implementar `sanitizeText` y `sanitizeName`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679038930
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679213277
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679400398
+      }
+    ],
+    "5.12 Implementar `loadClassPackage`, `ClassPackageSchema`, `validateManifest` y cableado final de `src/index.ts`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679038998
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679601416
+      }
+    ],
+    "5.17 Escribir pruebas unitarias con entradas hostiles": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039058
+      }
+    ],
+    "5.18 Escribir pruebas de contaminación de prototipo": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039124
+      }
+    ],
+    "6. Checkpoint - Security": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039189
+      }
+    ],
+    "7.1 Prueba de humo de ESLint con TypeScript 7 y decisión de respaldo": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039250
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679048725
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679199652
+      }
+    ],
+    "7.2 Crear `eslint.config.js` y el script `pnpm lint`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039314
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679216747
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679571487
+      }
+    ],
+    "8.1 Crear la estructura base del Shell y los modos de Vite": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039375
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679604867
+      },
+      {
+        "executionId": "d7d40c51-01ba-45df-b074-f92f8d94da5e",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679744289
+      }
+    ],
+    "8.2 Implementar `src/security/csp.ts`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039434
+      }
+    ],
+    "8.5 Agregar `cspPlugin` a `vite.config.ts`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039496
+      }
+    ],
+    "8.8 Implementar `ModuleUnavailableError` y el marcador de stubs": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039558
+      }
+    ],
+    "8.9 Implementar `src/integrity/` y `src/net/localFetch.ts`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039622
+      }
+    ],
+    "8.14 Crear `data/hashes.json` y los scripts de hashes": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039683
+      }
+    ],
+    "8.15 Agregar el plugin `preloadedData` a `vite.config.ts`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039748
+      }
+    ],
+    "8.16 Implementar los 7 stubs en `src/stubs/`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039813
+      }
+    ],
+    "8.21 Crear los 7 puntos de registro en `src/modules/`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039877
+      }
+    ],
+    "8.22 Implementar el host de pestañas y el banner en `src/host/`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679039942
+      }
+    ],
+    "8.25 Implementar `check-no-stubs`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679040008
+      }
+    ],
+    "8.28 Conectar `src/main.ts` y las pestañas de ejemplo": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679040072
+      }
+    ],
+    "9. Checkpoint - Shell": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679040163
+      }
+    ],
+    "10.1 Crear `.semgrep/rules.yml`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679040233
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679053145
+      },
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679203095
+      }
+    ],
+    "10.2 Crear `.github/workflows/ci.yml` y `codeql.yml`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679040300
+      }
+    ],
+    "11.1 Redactar `docs/SEGURIDAD.md`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679040366
+      }
+    ],
+    "11.2 Redactar `docs/INTEGRACION.md`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679040431
+      }
+    ],
+    "11.3 Redactar `docs/MODULO-contracts.md` y `docs/MODULO-security.md`": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679040506
+      }
+    ],
+    "12. Final checkpoint - Verificación completa": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679040628
+      }
+    ],
+    "7. Configurar ESLint y análisis de código": [
+      {
+        "executionId": "777997d0-b730-4912-a494-6bda6c8d125c",
+        "chatSessionId": "sess_400b4a20-bc06-4861-a9b5-65e2b865cf38",
+        "timestamp": 1794679571600
+      }
+    ]
+  }
+}

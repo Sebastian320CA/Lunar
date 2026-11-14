@@ -1,0 +1,109 @@
+{
+  "_meta": {
+    "status": "reviewed"
+  },
+  "common": {
+    "appName": "Lunar Landing Site Navigator",
+    "disclaimer": "Inspired by NASA Space Apps - Not endorsed by NASA",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "loading": "Loading...",
+    "language": "Language",
+    "offline": "Offline mode"
+  },
+  "menu": {
+    "title": "Main menu",
+    "explore": "Explore sites",
+    "compare": "Compare sites",
+    "energy": "Solar energy",
+    "learn": "Learn",
+    "games": "Mini-games",
+    "settings": "Settings",
+    "about": "About",
+    "chooseLanguage": "Choose your language"
+  },
+  "panel": {
+    "close": "Close",
+    "summary": "Summary",
+    "name": "Name",
+    "program": "Program",
+    "coordinates": "Coordinates",
+    "source": "Source",
+    "verified": "Verified",
+    "unverified": "Unverified",
+    "pending": "PENDING",
+    "sites": {
+      "one": "{count} site",
+      "other": "{count} sites"
+    }
+  },
+  "about": {
+    "title": "About",
+    "credits": "Credits",
+    "data": "Data and tools",
+    "nonEndorsement": "NASA does not endorse entities that are not part of the US government.",
+    "license": "License"
+  },
+  "scene": {
+    "moon": "Moon",
+    "earth": "Earth",
+    "sun": "Sun",
+    "horizon": "Horizon",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "reset": "Reset view",
+    "directComms": "Direct communication with Earth"
+  },
+  "time": {
+    "date": "Date",
+    "utc": "UTC time",
+    "play": "Play",
+    "pause": "Pause",
+    "step": "Step",
+    "minutes": {
+      "one": "{count} minute",
+      "other": "{count} minutes"
+    },
+    "days": {
+      "one": "{count} day",
+      "other": "{count} days"
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong.",
+    "invalidInput": "Invalid input.",
+    "fileTooLarge": "The file is too large.",
+    "invalidFile": "The file is not valid.",
+    "dataMissing": "Data not available."
+  },
+  "compare": {
+    "title": "Compare sites"
+  },
+  "energy": {
+    "title": "Solar energy"
+  },
+  "games": {
+    "title": "Minigames",
+    "projectile": "Projectile",
+    "blocks": "Payload",
+    "explorer": "Explorer"
+  },
+  "edu": {
+    "title": "Trivia",
+    "lang": "en"
+  },
+  "sky": {
+    "tab": "Sun and Earth",
+    "approximate": "Approximate data",
+    "technical": "Technical detail",
+    "sunsetIn": "Sunset in",
+    "earthsetIn": "Earthset in",
+    "loading": "Calculating...",
+    "sunUp": "The Sun is above the horizon.",
+    "sunDown": "The Sun is below the horizon.",
+    "earthUp": "The Earth is visible.",
+    "earthDown": "The Earth is not visible."
+  }
+}
