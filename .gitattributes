@@ -1,0 +1,7 @@
+* text=auto
+*.glb binary
+*.bin binary
+*.png binary
+*.jpg binary
+*.webp binary
+*.ktx2 binary

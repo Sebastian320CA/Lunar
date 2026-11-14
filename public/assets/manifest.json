@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "id": "apollo-lm",
+      "path": "/assets/models/apollo-lm.glb",
+      "unitsToMeters": 1,
+      "upAxis": "Y",
+      "nodes": [],
+      "polygons": 0,
+      "license": "NASA media usage guidelines",
+      "credit": "NASA 3D Resources"
+    }
+  ],
+  "textures": [
+    { "id": "moon-color", "path": "/assets/textures/moon-color.webp", "credit": "NASA SVS CGI Moon Kit" },
+    { "id": "moon-height", "path": "/assets/textures/moon-height.webp", "credit": "NASA SVS / LRO LOLA" },
+    { "id": "earth-color", "path": "/assets/textures/earth-color.webp", "credit": "NASA Earth Observatory, Blue Marble NG" }
+  ]
+}
