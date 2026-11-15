@@ -1,10 +1,11 @@
 import type { LunarSite, SceneApi, SceneMode, UtcString, Unsubscribe, Vec3 } from '@lunar/contracts';
 import { Vector3 } from 'three';
 import type { AssetLoader } from './assets.js';
-import { EARTH_DISTANCE, SceneCore } from './core.js';
+import { EARTH_DISTANCE, EARTH_RADIUS, SceneCore } from './core.js';
 import { FocusAnimator } from './focus.js';
 import { MarkerLayer } from './markers.js';
 import {
+  DEFAULT_ORBIT_LIMITS,
   CameraRig,
   ModeMachine,
   canTransition,
@@ -20,6 +21,7 @@ export * from './focus.js';
 export * from './markers.js';
 export * from './modes.js';
 export * from './sun.js';
+export * from './atmosphere.js';
 
 export interface CreateSceneOptions {
   assets?: AssetLoader;
@@ -53,7 +55,17 @@ export interface SceneHandle extends SceneApi {
   zoom(delta: number): void;
   /** Gira la orbita (radianes) en `free`/`map`. */
   orbitBy(dAzimuth: number, dPolar: number): void;
+  /** Vuela hasta la Tierra y orbita a su alrededor (modo `free`, centro en la Tierra). */
+  viewEarth(): void;
+  /** Vuelve a orbitar la Luna (modo `free`). */
+  viewMoon(): void;
+  /** Cuerpo en el centro de la orbita libre. */
+  getFocusBody(): 'moon' | 'earth';
 }
+
+/** Distancia minima de la camara al centro de la Tierra en su vista orbital. */
+const EARTH_MIN_RADIUS = EARTH_RADIUS * 1.35;
+const EARTH_VIEW_RADIUS = EARTH_RADIUS * 3.4;
 
 const TAP_MAX_MOVE_PX = 5;
 const EARTH_DIM_MIN_OPACITY = 0.25;
@@ -123,11 +135,13 @@ export function createScene(container: HTMLElement, opts: CreateSceneOptions = {
     core.moonGroup.updateMatrixWorld();
     const landingW = machine.modeWeight('landing');
     core.earthGroup.position.copy(visualEarth).lerp(physicalEarth(), landingW);
+    if (focusBody === 'earth') rig.orbitCenter.copy(core.earthGroup.position);
     rig.update(dt);
     markers.group.visible = landingW < 0.5;
     core.setSunDirection(bodyDir.clone().applyQuaternion(core.moonGroup.quaternion));
     const dim = machine.backgroundDim();
     core.setEarthOpacity(1 - (1 - EARTH_DIM_MIN_OPACITY) * dim);
+    core.updateAtmosphere();
   };
 
   /** Sitio que se mostrara al terminar la transicion intermedia (por ejemplo intro -> map -> site). */
@@ -140,6 +154,7 @@ export function createScene(container: HTMLElement, opts: CreateSceneOptions = {
   const selectSite = (id: string): void => {
     const site = sites.get(id);
     if (site === undefined) return;
+    focusMoonOrbit();
     markers.setHighlighted(id);
     const from = machine.isTransitioning() ? null : machine.mode;
     if (from !== null && canTransition(from, 'site')) {
@@ -161,10 +176,19 @@ export function createScene(container: HTMLElement, opts: CreateSceneOptions = {
     const site = sites.get(id);
     if (site === undefined) return;
     pendingSite = null;
+    focusMoonOrbit();
     markers.setHighlighted(id);
     rig.landing = { latDeg: site.latDeg, lonDeg: site.lonDeg };
     if (!canTransition(machine.mode, 'landing')) machine.transitionTo('free');
     machine.transitionTo('landing');
+  };
+  let focusBody: 'moon' | 'earth' = 'moon';
+  const focusMoonOrbit = (): void => {
+    if (focusBody === 'moon') return;
+    focusBody = 'moon';
+    rig.orbitCenter.set(0, 0, 0);
+    rig.orbit.limits.minRadius = DEFAULT_ORBIT_LIMITS.minRadius;
+    rig.orbit.limits.maxRadius = DEFAULT_ORBIT_LIMITS.maxRadius;
   };
   const unsubMarkers = markers.onSiteSelected(selectSite);
 
@@ -247,6 +271,31 @@ export function createScene(container: HTMLElement, opts: CreateSceneOptions = {
     },
     getMode(): SceneMode {
       return machine.mode;
+    },
+    viewEarth(): void {
+      pendingSite = null;
+      markers.setHighlighted(null);
+      focusBody = 'earth';
+      rig.orbit.limits.minRadius = EARTH_MIN_RADIUS;
+      rig.orbit.limits.maxRadius = 80;
+      // Camara del lado iluminado, un poco hacia la Luna para que se vea al fondo, y algo elevada.
+      const sunW = core.sun.position.clone().normalize();
+      const toMoon = visualEarth.clone().negate().normalize();
+      const offset = sunW.multiplyScalar(0.9).add(toMoon.multiplyScalar(0.55)).add(new Vector3(0, 0.3, 0));
+      if (offset.lengthSq() < 1e-6) offset.set(0, 0.3, 1);
+      rig.orbit.setFromPosition(offset.normalize().multiplyScalar(EARTH_VIEW_RADIUS));
+      if (!canTransition(machine.mode, 'free')) machine.transitionTo('free');
+      machine.transitionTo('free');
+    },
+    viewMoon(): void {
+      pendingSite = null;
+      const wasEarth = focusBody === 'earth';
+      focusMoonOrbit();
+      if (wasEarth) rig.orbit.setFromPosition(new Vector3(2.4, 1.2, 5.2));
+      machine.transitionTo('free');
+    },
+    getFocusBody(): 'moon' | 'earth' {
+      return focusBody;
     },
     onModeChange(cb: (mode: SceneMode) => void): Unsubscribe {
       return machine.onChange((e) => {

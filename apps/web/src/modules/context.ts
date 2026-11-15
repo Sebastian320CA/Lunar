@@ -24,6 +24,9 @@ export interface WebScene extends SceneApi {
   onModeChange?(cb: (mode: SceneMode) => void): Unsubscribe;
   zoom?(delta: number): void;
   orbitBy?(dAzimuth: number, dPolar: number): void;
+  viewEarth?(): void;
+  viewMoon?(): void;
+  getFocusBody?(): 'moon' | 'earth';
 }
 
 /** Control de tiempo de `@lunar/sites` (LunarTimeController) con saltos por dia lunar y eventos. */
