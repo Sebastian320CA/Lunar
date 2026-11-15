@@ -328,11 +328,13 @@ export function mountShell(root: HTMLElement, ctx: WebContext, opts: ShellOption
   const modes = el(header, 'div', 'ln-modes');
   modes.setAttribute('role', 'group');
   tx(modes, 'shell.viewMode', 'aria-label');
-  const modeButtons = new Map<SceneMode, HTMLButtonElement>();
+  type ViewId = 'free' | 'site' | 'landing' | 'earth';
+  const modeButtons = new Map<ViewId, HTMLButtonElement>();
   for (const [mode, key] of [
     ['free', 'shell.mode.free'],
     ['site', 'shell.mode.site'],
     ['landing', 'shell.mode.landing'],
+    ['earth', 'shell.mode.earth'],
   ] as const) {
     const b = tx(button(modes, 'ln-mode-btn'), key);
     b.dataset['mode'] = mode;
@@ -800,7 +802,11 @@ export function mountShell(root: HTMLElement, ctx: WebContext, opts: ShellOption
 
   // ---------- Modos de la escena ----------
   const syncModes = (mode: SceneMode): void => {
-    for (const [m, b] of modeButtons) b.setAttribute('aria-pressed', String(m === mode || (m === 'free' && mode === 'map')));
+    const earth = svc.scene?.getFocusBody?.() === 'earth' && (mode === 'free' || mode === 'map');
+    for (const [m, b] of modeButtons) {
+      const on = m === 'earth' ? earth : !earth && (m === mode || (m === 'free' && mode === 'map'));
+      b.setAttribute('aria-pressed', String(on));
+    }
   };
   if (svc.scene?.onModeChange) cleanups.push(svc.scene.onModeChange(syncModes));
   syncModes(svc.scene?.getMode?.() ?? 'free');
@@ -810,8 +816,13 @@ export function mountShell(root: HTMLElement, ctx: WebContext, opts: ShellOption
       const s = svc.scene;
       if (!s) return;
       endIntro();
-      if (mode === 'free') s.setMode('free');
-      else {
+      if (mode === 'earth') {
+        if (s.viewEarth) s.viewEarth();
+        else s.focusEarthOn(0, 0);
+      } else if (mode === 'free') {
+        if (s.viewMoon) s.viewMoon();
+        else s.setMode('free');
+      } else {
         const site = selected ?? allSites()[0];
         if (!site) return;
         if (!selected) selectSite(site.id, false);

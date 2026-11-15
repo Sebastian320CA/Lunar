@@ -198,6 +198,7 @@
     "mode.free": "Orbit",
     "mode.site": "Site",
     "mode.landing": "Surface",
+    "mode.earth": "Earth",
     "language": "Language",
     "themeLight": "Use light theme",
     "themeDark": "Use dark theme",
@@ -269,7 +270,7 @@
     "helpText.select": "Pick a site in the list on the left or click a marker on the Moon. Drag to rotate and use the wheel to zoom.",
     "helpText.panel": "\"View analysis\" opens the panel: summary, Sun and Earth above the horizon, solar energy, comparison, trivia and minigames.",
     "helpText.time": "The timeline moves the date: drag the bar, play, jump one lunar day or to the next sunrise, sunset or earthrise. Space bar: play or pause.",
-    "helpText.modes": "Views: Orbit (rotate freely), Site (site facing you) and Surface (first person, with Earth at its real position in the sky).",
+    "helpText.modes": "Views: Orbit (rotate freely), Site (site facing you), Surface (first person, with Earth at its real position in the sky) and Earth (orbit the Earth and its atmosphere).",
     "helpText.custom": "You can add your own coordinates. They are marked \"unverified\" because they do not come from a published source.",
     "helpText.export": "The PDF button creates a report of the chosen site for the next lunar day, with a watermark and sources."
   }

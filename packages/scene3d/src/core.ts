@@ -26,6 +26,7 @@ import {
   type Texture,
 } from 'three';
 import { AssetLoader } from './assets.js';
+import { createAtmosphere, type Atmosphere } from './atmosphere.js';
 
 export const MOON_RADIUS = 1;
 export const EARTH_RADIUS = 3.67; // relacion radio Tierra/Luna ~3.67
@@ -154,6 +155,8 @@ export class SceneCore {
   readonly earthGroup = new Group();
   readonly stars: Points;
   readonly sunGlow: Sprite | null;
+  readonly atmosphere: Atmosphere;
+  private earthOpacity = 1;
   readonly assets: AssetLoader;
   /** Materiales de la Tierra (esfera o GLB) para atenuarla en el modo `site`. */
   earthMaterials: Material[] = [];
@@ -203,6 +206,8 @@ export class SceneCore {
     this.earthGroup.add(this.earth);
     this.earthGroup.position.set(0, 0, -EARTH_DISTANCE);
     this.earthMaterials = [this.earth.material as Material];
+    this.atmosphere = createAtmosphere(EARTH_RADIUS, mobile ? 48 : 96);
+    this.earthGroup.add(this.atmosphere.group);
     this.stars = createStarfield();
     this.sunGlow = createSunGlow(canvas.ownerDocument);
     this.scene.add(this.stars, this.moonGroup, this.earthGroup, new AmbientLight(0xb8c4ff, 0.06));
@@ -269,12 +274,23 @@ export class SceneCore {
         if ((o as Mesh).isMesh && m) mats.push(...(Array.isArray(m) ? m : [m]));
       });
       this.earthMaterials = mats;
+      // Superficie mas mate (el GLB trae metallic 0.25, que oscurece los oceanos) y relieve del normal map.
+      for (const m of mats) {
+        const sm = m as MeshStandardMaterial;
+        if (!sm.isMeshStandardMaterial) continue;
+        sm.metalness = 0;
+        sm.roughness = 0.72;
+        sm.normalScale?.set(1.4, 1.4);
+        if (sm.map) sm.map.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
+        sm.needsUpdate = true;
+      }
       this.modelsApplied.add(EARTH_MODEL_ID);
     }
   }
 
   /** Opacidad 0..1 de la Tierra (atenuacion en `site`). */
   setEarthOpacity(opacity: number): void {
+    this.earthOpacity = opacity;
     for (const m of this.earthMaterials) {
       const t = opacity < 1;
       if (m.transparent !== t) {
@@ -298,6 +314,13 @@ export class SceneCore {
     if (d.lengthSq() === 0) return;
     this.sun.position.copy(d.normalize().multiplyScalar(100));
     this.sunGlow?.position.copy(d).multiplyScalar(SUN_GLOW_DISTANCE);
+  }
+
+  /** Actualiza la atmosfera con la posicion actual de la Tierra y del Sol. Llamar cada frame. */
+  updateAtmosphere(): void {
+    const center = this.earthGroup.getWorldPosition(new Vector3());
+    const sunDir = this.sun.position.clone().normalize();
+    this.atmosphere.update(sunDir, center, Math.max(0, (this.earthOpacity - 0.25) / 0.75) * 0.85 + 0.15 * this.earthOpacity);
   }
 
   resize(): void {

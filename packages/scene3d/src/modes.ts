@@ -13,7 +13,7 @@ export const SCENE_MODES: readonly SceneMode[] = ['intro', 'landing', 'free', 'm
 export const MODE_TRANSITIONS: Readonly<Record<SceneMode, readonly SceneMode[]>> = {
   intro: ['landing', 'free', 'map'],
   landing: ['landing', 'free', 'map', 'site'],
-  free: ['landing', 'map', 'intro', 'site'],
+  free: ['free', 'landing', 'map', 'intro', 'site'],
   map: ['free', 'site', 'landing'],
   site: ['site', 'map', 'free', 'landing'],
 };
@@ -206,7 +206,7 @@ export class OrbitState {
   readonly limits: OrbitLimits;
 
   constructor(limits: OrbitLimits = DEFAULT_ORBIT_LIMITS) {
-    this.limits = limits;
+    this.limits = { ...limits };
   }
 
   /** Aplica un impulso (rad/s y unidades/s). */
@@ -306,6 +306,8 @@ export class CameraRig {
   readonly orbit: OrbitState;
   landing: { latDeg: number; lonDeg: number };
   siteTarget: { latDeg: number; lonDeg: number } | null = null;
+  /** Centro de la orbita en `free`/`map` (la Luna por defecto; la Tierra en la vista de la Tierra). */
+  readonly orbitCenter = new Vector3();
   private readonly introStart: CameraPose;
   private readonly introEnd: CameraPose;
   private startPose: CameraPose;
@@ -366,7 +368,7 @@ export class CameraRig {
   }
 
   private orbitPose(): CameraPose {
-    return { position: this.orbit.position(), target: new Vector3() };
+    return { position: this.orbit.position().add(this.orbitCenter), target: this.orbitCenter.clone() };
   }
 
   /** Llamar cada frame. */
@@ -395,7 +397,8 @@ export class CameraRig {
       this.apply(this.poseFor(mode));
     }
     if (mode !== 'free' && mode !== 'map') {
-      this.orbit.setFromPosition(this.camera.position.lengthSq() > 4 ? this.camera.position : this.introEnd.position);
+      const rel = this.camera.position.clone().sub(this.orbitCenter);
+      this.orbit.setFromPosition(rel.lengthSq() > 4 ? rel : this.introEnd.position);
     }
   }
 

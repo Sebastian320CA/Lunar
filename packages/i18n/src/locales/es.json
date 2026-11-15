@@ -198,6 +198,7 @@
     "mode.free": "Órbita",
     "mode.site": "Sitio",
     "mode.landing": "Superficie",
+    "mode.earth": "Tierra",
     "language": "Idioma",
     "themeLight": "Usar tema claro",
     "themeDark": "Usar tema oscuro",
@@ -269,7 +270,7 @@
     "helpText.select": "Elige un sitio en la lista de la izquierda o haz clic en un marcador de la Luna. Arrastra para girar y usa la rueda para acercar.",
     "helpText.panel": "\"Ver análisis\" abre el panel: resumen, Sol y Tierra sobre el horizonte, energía solar, comparación, trivia y minijuegos.",
     "helpText.time": "La línea de tiempo mueve la fecha: arrastra la barra, reproduce, salta un día lunar o al próximo amanecer, atardecer o salida de la Tierra. Barra espaciadora: reproducir o pausar.",
-    "helpText.modes": "Vistas: Órbita (girar libremente), Sitio (el sitio de frente) y Superficie (primera persona, con la Tierra en su posición real en el cielo).",
+    "helpText.modes": "Vistas: Órbita (girar libremente), Sitio (el sitio de frente), Superficie (primera persona, con la Tierra en su posición real en el cielo) y Tierra (orbitar la Tierra con su atmósfera).",
     "helpText.custom": "Puedes agregar tus propias coordenadas. Se marcan como \"sin verificar\" porque no provienen de una fuente publicada.",
     "helpText.export": "El botón PDF genera un informe del sitio elegido para el próximo día lunar, con marca de agua y fuentes."
   }
